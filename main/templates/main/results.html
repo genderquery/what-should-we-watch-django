@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+{% if result %}
+<ul>
+  {% for result in result.results %}
+  <li>
+
+  <h3>{{ result.title }} ({{ result.release_date | slice:":4" }})</h3>
+  <p>{{ result.overview }}</p>
+  <form method="post" action="/add">
+    {% csrf_token %}
+    <input type="hidden" name="media_type" value="movie" />
+    <input type="hidden" name="media_id" value="{{ result.id }}" />
+    <input type="submit" value="Add" />
+  </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No results.<p>
+{% endif %}
+{% endblock %}

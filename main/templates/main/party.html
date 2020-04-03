@@ -1,0 +1,42 @@
+{% extends "main/base.html" %}
+
+{% block title %}
+Party {{ party.code }}
+{% endblock %}
+
+{% block content %}
+<h1>Party {{ party.code }}</h1>
+
+<form method="get" action="/search">
+  <label for="search">Search</label>
+  <input id="search" name="q" />
+  <input type="submit" value="Search" />
+</form>
+
+{% if suggestions %}
+<ul>
+  {% for suggestion in suggestions %}
+  <li>
+    <h3>{{ suggestion.details.title }}</h3>
+    <p>{{ suggestion.details.overview }}</p>
+    <span>Score: {{ suggestion.score }}</span>
+    <form method="post" action="/vote">
+      {% csrf_token %}
+      <input type="hidden" name="suggestion" value="{{ suggestion.id }}">
+      <input type="hidden" name="vote" value="1">
+      <input type="submit" value="Vote up" {% if suggestion.vote > 0 %}disabled{% endif %}>
+    </form>
+    <form method="post" action="/vote">
+      {% csrf_token %}
+      <input type="hidden" name="suggestion" value="{{ suggestion.id }}">
+      <input type="hidden" name="vote" value="-1">
+      <input type="submit" value="Vote down" {% if suggestion.vote < 0 %}disabled{% endif %}>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No suggestions, yet.</p>
+{% endif %}
+
+{% endblock %}
